@@ -63,7 +63,7 @@ io.on('connection', (socket) => {
     // 클릭 이벤트 처리
     socket.on('click', () => {
         // 글로벌 스코어 증가
-        gameData.globalScore+=0;
+        gameData.globalScore++;
         
         // 현재 날짜 기준 일일 통계 업데이트
         const today = new Date().toISOString().split('T')[0];
