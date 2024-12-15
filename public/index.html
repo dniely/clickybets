@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>test page</title>
+    <title>클리키sldpfy</title>
     <h1 style="
     position: fixed; 
     top: 0; 
@@ -15,7 +15,8 @@
     z-index: 20; 
     background-color: rgba(0,0,0,0.5); 
     font-family: Arial, sans-serif;
-">Clicky 1.1 @sldpfy</h1>
+">Clicky 1.0 @sldpfy</h1>
+    <h1 id="global">점수: 0</h1> 
     <style>
         * {
             margin: 0;
@@ -38,6 +39,7 @@
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
+            flex-direction: column; /* 세로로 정렬 */
         }
 
         #touchArea {
@@ -71,14 +73,12 @@
 
         @keyframes breathe {
             from {
-                transform: scale(1.10);
+                transform: scale(0.90);
             }
             to {
-                transform: scale(1.35);
+                transform: scale(1.05);
             }
         }
-
-        
 
         #scoreText:active {
             transform: scale(1.2);
@@ -115,34 +115,25 @@
             e.preventDefault();
         }, { passive: false });
 
-        // 점수 포맷팅 함수
-        function formatScore(score) {
-            if (score >= 100000000) {
-                return (score / 100000000).toFixed(1) + '억'; // 만약 점수가 백만 이상이면 'M' 추가
-            } else if (score >= 10000) {
-                return (score / 10000).toFixed(1) + '만'; // 만약 점수가 천 이상이면 'K' 추가
-            }
-            return score; // 그 외에는 그대로 출력
-        }
-
         // 초기 데이터 설정
         socket.on('initialData', (data) => {
-            scoreText.textContent = formatScore(data.globalScore);
+            scoreText.textContent = data.globalScore;
         });
 
         // 실시간 점수 업데이트
         socket.on('scoreUpdate', (data) => {
-            scoreText.textContent = formatScore(data.globalScore);
+            scoreText.textContent = data.globalScore;
         });
 
         function getRandomColor() {
-            const letters = '0123456789ABCDEF';
-            let color = '#';
-            for (let i = 0; i < 6; i++) {
-                color += letters[Math.floor(Math.random() * 16)];
-            }
-            return color;
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
         }
+        return color;
+}
+
     </script>
 </body>
 </html>
