@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clicker Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: black;
+            overflow: hidden;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        #scoreText {
+            font-family: 'Arial Black', sans-serif;
+            font-size: 10vw;
+            font-weight: bold;
+            background: linear-gradient(45deg, red, blue);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+            transition: transform 0.1s ease;
+            will-change: transform;
+        }
+
+        #scoreText:hover {
+            animation: pulse 1s infinite alternate;
+        }
+
+        #scoreText:active {
+            transform: scale(1.2);
+        }
+
+        @keyframes pulse {
+            from {
+                transform: scale(1.05);
+            }
+            to {
+                transform: scale(0.95);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="scoreText">0</div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const scoreText = document.getElementById('scoreText');
+
+        // 화면 전체 클릭 이벤트
+        document.body.addEventListener('click', () => {
+            socket.emit('click');
+        });
+
+        // 초기 데이터 설정
+        socket.on('initialData', (data) => {
+            scoreText.textContent = data.globalScore;
+        });
+
+        // 실시간 점수 업데이트
+        socket.on('scoreUpdate', (data) => {
+            scoreText.textContent = data.globalScore;
+        });
+    </script>
+</body>
+</html>

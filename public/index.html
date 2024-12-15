@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Clicky 1.0</title>
+    <h1 style="
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    text-align: center; 
+    color: aliceblue; 
+    font-size: smaller;
+    padding: 50px; 
+    z-index: 20; 
+    background-color: rgba(0,0,0,0.5); 
+    font-family: Arial, sans-serif;
+">Clicky 1.0 @sldpfy</h1>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            touch-action: manipulation; /* 확대/축소 방지 */
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: black;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        #touchArea {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        #scoreText {
+            font-family: 'Arial Black', sans-serif;
+            font-size: 20vmin; /* vmin 사용으로 가로/세로 중 작은 크기에 반응 */
+            font-weight: bold;
+            background: linear-gradient(45deg, red, blue);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+            transition: transform 0.2s ease;
+            will-change: transform;
+            animation: breathe 2s infinite alternate;
+            text-align: center;
+            width: 100%;
+            padding: 20px;
+        }
+
+        @keyframes breathe {
+            from {
+                transform: scale(0.95);
+            }
+            to {
+                transform: scale(1.05);
+            }
+        }
+
+        
+
+        #scoreText:active {
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+<body>
+    <div id="touchArea">
+        <div id="scoreText">0</div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const scoreText = document.getElementById('scoreText');
+        const touchArea = document.getElementById('touchArea');
+
+        // 모바일 및 데스크톱 이벤트 통합
+        function handleClick(event) {
+            // 기본 이벤트 방지
+            event.preventDefault();
+            event.stopPropagation();
+
+            // 클릭/터치 이벤트 처리
+            socket.emit('click');
+        }
+
+        // 다양한 이벤트 리스너 추가
+        touchArea.addEventListener('click', handleClick);
+        touchArea.addEventListener('touchstart', handleClick, { passive: false });
+
+        // 기본 터치 동작 방지
+        document.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+        }, { passive: false });
+
+        // 초기 데이터 설정
+        socket.on('initialData', (data) => {
+            scoreText.textContent = data.globalScore;
+        });
+
+        // 실시간 점수 업데이트
+        socket.on('scoreUpdate', (data) => {
+            scoreText.textContent = data.globalScore;
+        });
+
+    </script>
+</body>
+</html>
